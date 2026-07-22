@@ -1,5 +1,8 @@
-import type { ReactNode } from 'react';
+import { Plus } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
+import { JobForm } from '../../features/jobs/components/JobForm';
+import { Modal } from './Modal';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -17,6 +20,8 @@ const navigationItems: NavigationItem[] = [
 ];
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <aside className="fixed inset-x-0 top-0 z-20 border-b border-white/10 bg-slate-950/95 px-4 backdrop-blur md:inset-y-0 md:left-0 md:right-auto md:w-64 md:border-b-0 md:border-r md:px-5">
@@ -54,21 +59,40 @@ export function MainLayout({ children }: MainLayoutProps) {
 
       <div className="flex min-h-screen flex-col pt-16 md:pl-64 md:pt-0">
         <header className="sticky top-16 z-10 border-b border-white/10 bg-slate-950/80 px-6 py-4 backdrop-blur md:top-0">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300">
                 Job Application Tracker
               </p>
               <h1 className="text-xl font-semibold text-white">Painel de Candidaturas</h1>
             </div>
-            <span className="w-fit rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">
-              Workspace ativo
-            </span>
+
+            <div className="flex items-center gap-3">
+              <span className="hidden rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200 sm:inline-flex">
+                Workspace ativo
+              </span>
+              <button
+                className="inline-flex w-fit items-center gap-2 rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition-colors hover:bg-cyan-300"
+                onClick={() => setIsModalOpen(true)}
+                type="button"
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                Nova Aplicação
+              </button>
+            </div>
           </div>
         </header>
 
         <main className="flex-1 px-6 py-8 sm:px-8 lg:px-10">{children}</main>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Nova candidatura"
+      >
+        <JobForm onSuccess={() => setIsModalOpen(false)} />
+      </Modal>
     </div>
   );
 }
