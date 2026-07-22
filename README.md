@@ -1,75 +1,62 @@
-# React + TypeScript + Vite
+# Job Application Tracker (SaaS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma SaaS desenvolvida para otimizar a jornada do candidato em processos seletivos. O sistema permite o rastreamento em formato Kanban, análise de métricas de conversão e testes A/B de currículos, garantindo decisões baseadas em dados para maximizar a aprovação em etapas de triagem (ATS).
 
-Currently, two official plugins are available:
+## 🚀 Stack Tecnológica
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* **Framework:** React + Vite (SPA)
+* **Linguagem:** TypeScript (Strict Mode)
+* **Estilização:** Tailwind CSS v4
+* **Roteamento:** React Router v6
+* **Gerenciamento de Estado:** Zustand *(A ser implementado)*
+* **Drag and Drop:** dnd-kit *(A ser implementado)*
+* **Formulários e Validação:** React Hook Form + Zod *(A ser implementado)*
 
-## React Compiler
+## 🏗️ Arquitetura (Feature-Based)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O projeto adota uma arquitetura modular baseada em *Features*, inspirada em princípios de *Clean Architecture* e DDD. O objetivo é manter o domínio isolado da interface e garantir alta coesão e baixo acoplamento.
 
-## Expanding the ESLint configuration
+* `/src/core`: Configurações globais, provedores, rotas e clientes HTTP.
+* `/src/shared`: Componentes UI genéricos (botões, modais, inputs) e hooks utilitários.
+* `/src/features`: Módulos de negócio. Cada feature possui seu próprio `/domain` (tipos/entidades), `/components` e `/store`.
+  * `jobs/`: Gestão das candidaturas (Entidade central).
+  * `resumes/`: Gestão das versões de currículos.
+  * `analytics/`: Cálculo de métricas e conversão.
+* `/src/pages`: Camada de orquestração. Componentes que importam o Layout e as Features para compor as telas.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🗺️ Roadmap de Desenvolvimento (Fonte da Verdade)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Este é o passo a passo de implementação do sistema, focado em entregar valor de forma iterativa (MVP).
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Fase 1: Fundação e Layout (✅ Concluído)
+- [x] Configuração Vite + React + TS.
+- [x] Configuração Tailwind v4.
+- [x] Definição da Entidade Base `JobApplication` (Domínio).
+- [x] Construção do `MainLayout` (Sidebar e Topbar).
+- [x] Configuração de Rotas base (`/` e `/dashboard`).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Fase 2: O Motor de Estado (Mock e Store)
+- [ ] Criar o estado global da aplicação utilizando **Zustand**.
+- [ ] Popular o estado inicial com dados simulados (*Mock Data*) contendo pelo menos 5 candidaturas em status diferentes ('APPLIED', 'HR_INTERVIEW', etc.).
+- [ ] Garantir que os tipos do estado respeitem estritamente as interfaces definidas em `/features/jobs/domain/types.ts`.
 
-```
+### Fase 3: O Quadro Kanban (Visualização e Interação)
+- [ ] Construir o componente `KanbanBoard` e `KanbanColumn`.
+- [ ] Construir o componente `JobCard` exibindo empresa, vaga, data de aplicação e tags visuais (ex: versão do currículo usado).
+- [ ] Integrar o `@dnd-kit/core` para permitir arrastar e soltar (Drag and Drop) os cards entre as colunas.
+- [ ] Atualizar o status da entidade `JobApplication` no Zustand ao soltar o card.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Fase 4: Formulários e Ingestão de Dados
+- [ ] Instalar e configurar `react-hook-form` e `zod`.
+- [ ] Criar o schema de validação (`jobSchema`) para novas vagas.
+- [ ] Desenvolver um Modal/Slide-over universal em `shared/ui` para abrigar formulários.
+- [ ] Implementar o `JobForm` para criar e editar vagas manualmente, atualizando o Zustand.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Fase 5: Dashboards e Inteligência de Dados
+- [ ] Criar a lógica de cálculo de métricas em `/features/analytics/domain` (Ex: Taxa de conversão geral = Entrevistas / Aplicações).
+- [ ] Implementar componentes visuais de indicadores (Cards numéricos, barras de progresso).
+- [ ] Construir a view do Dashboard calculando a eficácia (Teste A/B) entre diferentes versões de currículo registradas no Kanban.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+## 🧠 Decisões de Design (ADR - Architecture Decision Records)
+* **Por que Feature-Based e não agrupamento por tipo (ex: todos os hooks juntos)?** Facilita a manutenção em escala. Se a regra de negócio de "Vagas" mudar, altera-se apenas a pasta `features/jobs`, não quebrando o resto do app.
+* **Por que Zustand e não Redux/Context API?** O Context API causa re-renderizações desnecessárias em estruturas complexas como Kanban. O Redux possui muito *boilerplate*. Zustand oferece gerenciamento atômico e performático com curva de aprendizado rápida.
