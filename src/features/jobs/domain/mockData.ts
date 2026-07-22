@@ -1,0 +1,56 @@
+import type { JobApplication } from './types';
+
+export const mockJobs: JobApplication[] = [
+  {
+    id: 'job-001',
+    company: 'Google',
+    position: 'Frontend Developer',
+    status: 'APPLIED',
+    appliedDate: '2026-07-01',
+    resumeVersion: 'frontend-v3',
+    salaryRange: 'USD 140k - 180k',
+  },
+  {
+    id: 'job-002',
+    company: 'Microsoft',
+    position: 'Backend Engineer',
+    status: 'APPLIED',
+    appliedDate: '2026-07-03',
+    resumeVersion: 'backend-v2',
+    salaryRange: 'USD 130k - 170k',
+  },
+  {
+    id: 'job-003',
+    company: 'Netflix',
+    position: 'Full Stack Engineer',
+    status: 'HR_INTERVIEW',
+    appliedDate: '2026-06-25',
+    resumeVersion: 'fullstack-v1',
+  },
+  {
+    id: 'job-004',
+    company: 'Amazon',
+    position: 'React Engineer',
+    status: 'TECH_INTERVIEW',
+    appliedDate: '2026-06-20',
+    resumeVersion: 'frontend-v3',
+    salaryRange: 'USD 135k - 175k',
+  },
+  {
+    id: 'job-005',
+    company: 'Stripe',
+    position: 'Senior TypeScript Engineer',
+    status: 'OFFER',
+    appliedDate: '2026-06-12',
+    resumeVersion: 'senior-v4',
+    salaryRange: 'USD 160k - 210k',
+  },
+  {
+    id: 'job-006',
+    company: 'Meta',
+    position: 'Product Engineer',
+    status: 'REJECTED',
+    appliedDate: '2026-06-05',
+    resumeVersion: 'product-v2',
+  },
+];
