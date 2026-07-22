@@ -2,11 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { jobSchema, type JobFormData } from '../domain/schemas';
-import type { JobApplicationStatus } from '../domain/types';
+import type { JobApplication, JobApplicationStatus } from '../domain/types';
 import { useJobStore } from '../store/useJobStore';
+import { useResumeStore } from '../../resumes/store/useResumeStore';
 
 interface JobFormProps {
   onSuccess: () => void;
+  initialData?: JobApplication;
 }
 
 interface StatusOption {
@@ -35,8 +37,10 @@ function FieldError({ message }: { message?: string }) {
   return <p className="mt-1 text-sm text-red-400">{message}</p>;
 }
 
-export function JobForm({ onSuccess }: JobFormProps) {
+export function JobForm({ onSuccess, initialData }: JobFormProps) {
   const addJob = useJobStore((state) => state.addJob);
+  const updateJobDetails = useJobStore((state) => state.updateJobDetails);
+  const resumes = useResumeStore((state) => state.resumes);
 
   const {
     formState: { errors, isSubmitting },
@@ -45,22 +49,38 @@ export function JobForm({ onSuccess }: JobFormProps) {
     reset,
   } = useForm<JobFormData>({
     resolver: zodResolver(jobSchema),
-    defaultValues: {
-      company: '',
-      position: '',
-      status: 'APPLIED',
-      appliedDate: new Date().toISOString().slice(0, 10),
-      resumeVersion: '',
-      salaryRange: '',
-    },
+    defaultValues: initialData
+      ? {
+          company: initialData.company,
+          position: initialData.position,
+          status: initialData.status,
+          appliedDate: initialData.appliedDate,
+          resumeVersion: initialData.resumeVersion,
+          salaryRange: initialData.salaryRange || '',
+        }
+      : {
+          company: '',
+          position: '',
+          status: 'APPLIED',
+          appliedDate: new Date().toISOString().slice(0, 10),
+          resumeVersion: '',
+          salaryRange: '',
+        },
   });
 
   function onSubmit(data: JobFormData) {
-    addJob({
-      id: uuidv4(),
-      ...data,
-      salaryRange: data.salaryRange?.trim() || undefined,
-    });
+    if (initialData) {
+      updateJobDetails(initialData.id, {
+        ...data,
+        salaryRange: data.salaryRange?.trim() || undefined,
+      });
+    } else {
+      addJob({
+        id: uuidv4(),
+        ...data,
+        salaryRange: data.salaryRange?.trim() || undefined,
+      });
+    }
 
     reset();
     onSuccess();
@@ -115,12 +135,14 @@ export function JobForm({ onSuccess }: JobFormProps) {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className={labelClassName}>
           Versao do Curriculo
-          <input
-            className={inputClassName}
-            placeholder="Ex: frontend-v4"
-            type="text"
-            {...register('resumeVersion')}
-          />
+          <select className={inputClassName} {...register('resumeVersion')}>
+            <option value="">Selecione um currículo</option>
+            {resumes.map((resume) => (
+              <option key={resume.id} value={resume.name}>
+                {resume.name}
+              </option>
+            ))}
+          </select>
           <FieldError message={errors.resumeVersion?.message} />
         </label>
 

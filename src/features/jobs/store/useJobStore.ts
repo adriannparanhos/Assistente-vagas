@@ -6,6 +6,8 @@ interface JobStore {
   jobs: JobApplication[];
   addJob: (job: JobApplication) => void;
   updateJobStatus: (id: string, status: JobApplicationStatus) => void;
+  updateJobDetails: (id: string, updatedData: Partial<JobApplication>) => void;
+  deleteJob: (id: string) => void;
 }
 
 export const useJobStore = create<JobStore>((set) => ({
@@ -17,5 +19,13 @@ export const useJobStore = create<JobStore>((set) => ({
   updateJobStatus: (id, status) =>
     set((state) => ({
       jobs: state.jobs.map((job) => (job.id === id ? { ...job, status } : job)),
+    })),
+  updateJobDetails: (id, updatedData) =>
+    set((state) => ({
+      jobs: state.jobs.map((job) => (job.id === id ? { ...job, ...updatedData } : job)),
+    })),
+  deleteJob: (id) =>
+    set((state) => ({
+      jobs: state.jobs.filter((job) => job.id !== id),
     })),
 }));

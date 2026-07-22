@@ -12,6 +12,7 @@ export const jobSchema = z.object({
     }),
   resumeVersion: z.string().min(1, 'Informe a versao do curriculo.'),
   salaryRange: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 export type JobFormData = z.infer<typeof jobSchema>;

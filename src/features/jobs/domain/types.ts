@@ -13,4 +13,5 @@ export interface JobApplication {
   appliedDate: string;
   resumeVersion: string;
   salaryRange?: string;
+  notes?: string;
 }
