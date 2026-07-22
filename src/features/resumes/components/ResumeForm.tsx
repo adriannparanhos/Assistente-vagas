@@ -42,12 +42,14 @@ export function ResumeForm({ onSuccess, initialData }: ResumeFormProps) {
           targetRole: initialData.targetRole,
           fileName: initialData.fileName || '',
           fileBase64: initialData.fileBase64 || '',
+          skills: initialData.skills || '',
         }
       : {
           name: '',
           targetRole: '',
           fileName: '',
           fileBase64: '',
+          skills: '',
         },
   });
 
@@ -71,6 +73,7 @@ export function ResumeForm({ onSuccess, initialData }: ResumeFormProps) {
         targetRole: data.targetRole,
         fileName: data.fileName,
         fileBase64: data.fileBase64,
+        skills: data.skills,
       });
       toast.success('Currículo atualizado com sucesso!');
     } else {
@@ -81,6 +84,7 @@ export function ResumeForm({ onSuccess, initialData }: ResumeFormProps) {
         createdAt: new Date().toISOString(),
         fileName: data.fileName,
         fileBase64: data.fileBase64,
+        skills: data.skills,
       });
       toast.success('Currículo criado com sucesso!');
     }
@@ -127,6 +131,18 @@ export function ResumeForm({ onSuccess, initialData }: ResumeFormProps) {
             type="file"
           />
           <FieldError message={errors.fileName?.message || errors.fileBase64?.message} />
+        </label>
+      </div>
+
+      <div>
+        <label className={labelClassName}>
+          Habilidades / Palavras-chave (Separadas por vírgula)
+          <textarea
+            className={`${inputClassName} min-h-24 resize-y`}
+            placeholder="Ex: React, Node.js, TypeScript, Docker"
+            {...register('skills')}
+          />
+          <FieldError message={errors.skills?.message} />
         </label>
       </div>
 

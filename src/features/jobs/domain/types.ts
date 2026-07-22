@@ -5,6 +5,11 @@ export type JobApplicationStatus =
   | 'OFFER'
   | 'REJECTED';
 
+export interface StatusHistoryEvent {
+  status: JobApplicationStatus;
+  date: string;
+}
+
 export interface JobApplication {
   id: string;
   company: string;
@@ -14,4 +19,6 @@ export interface JobApplication {
   resumeVersion: string;
   salaryRange?: string;
   notes?: string;
+  jobKeywords?: string;
+  history?: StatusHistoryEvent[];
 }

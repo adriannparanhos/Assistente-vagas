@@ -57,6 +57,7 @@ export function JobForm({ onSuccess, initialData }: JobFormProps) {
           appliedDate: initialData.appliedDate,
           resumeVersion: initialData.resumeVersion,
           salaryRange: initialData.salaryRange || '',
+          jobKeywords: initialData.jobKeywords || '',
         }
       : {
           company: '',
@@ -65,6 +66,7 @@ export function JobForm({ onSuccess, initialData }: JobFormProps) {
           appliedDate: new Date().toISOString().slice(0, 10),
           resumeVersion: '',
           salaryRange: '',
+          jobKeywords: '',
         },
   });
 
@@ -73,12 +75,14 @@ export function JobForm({ onSuccess, initialData }: JobFormProps) {
       updateJobDetails(initialData.id, {
         ...data,
         salaryRange: data.salaryRange?.trim() || undefined,
+        jobKeywords: data.jobKeywords?.trim() || undefined,
       });
     } else {
       addJob({
         id: uuidv4(),
         ...data,
         salaryRange: data.salaryRange?.trim() || undefined,
+        jobKeywords: data.jobKeywords?.trim() || undefined,
       });
     }
 
@@ -155,6 +159,18 @@ export function JobForm({ onSuccess, initialData }: JobFormProps) {
             {...register('salaryRange')}
           />
           <FieldError message={errors.salaryRange?.message} />
+        </label>
+      </div>
+
+      <div>
+        <label className={labelClassName}>
+          Palavras-chave exigidas pela Vaga (Separadas por vírgula)
+          <textarea
+            className={`${inputClassName} min-h-24 resize-y`}
+            placeholder="Ex: React, Node.js, Agile, Scrum"
+            {...register('jobKeywords')}
+          />
+          <FieldError message={errors.jobKeywords?.message} />
         </label>
       </div>
 

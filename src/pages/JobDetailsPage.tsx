@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useJobStore } from '../features/jobs/store/useJobStore';
 import { MarkdownEditor } from '../shared/ui/MarkdownEditor';
+import { ATSAnalyzer } from '../features/analytics/components/ATSAnalyzer';
+import { StatusTimeline } from '../features/jobs/components/StatusTimeline';
 
 export function JobDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -64,9 +66,18 @@ export function JobDetailsPage() {
         </div>
       </header>
 
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-100">CRM & Anotações</h2>
-        <MarkdownEditor initialValue={job.notes || ''} onSave={handleSaveNotes} />
+      <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="space-y-4 lg:col-span-2">
+          <h2 className="text-lg font-semibold text-gray-100">CRM & Anotações</h2>
+          <MarkdownEditor initialValue={job.notes || ''} onSave={handleSaveNotes} />
+        </div>
+
+        <div className="space-y-4 lg:col-span-1">
+          <ATSAnalyzer jobId={job.id} />
+          {job.history && job.history.length > 0 && (
+            <StatusTimeline history={job.history} />
+          )}
+        </div>
       </div>
     </section>
   );

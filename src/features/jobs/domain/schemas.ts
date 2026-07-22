@@ -13,6 +13,15 @@ export const jobSchema = z.object({
   resumeVersion: z.string().min(1, 'Informe a versao do curriculo.'),
   salaryRange: z.string().optional(),
   notes: z.string().optional(),
+  jobKeywords: z.string().optional(),
+  history: z
+    .array(
+      z.object({
+        status: z.enum(['APPLIED', 'HR_INTERVIEW', 'TECH_INTERVIEW', 'OFFER', 'REJECTED']),
+        date: z.string(),
+      })
+    )
+    .optional(),
 });
 
 export type JobFormData = z.infer<typeof jobSchema>;

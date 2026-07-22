@@ -14,11 +14,28 @@ export const useJobStore = create<JobStore>((set) => ({
   jobs: mockJobs,
   addJob: (job) =>
     set((state) => ({
-      jobs: [...state.jobs, job],
+      jobs: [
+        ...state.jobs,
+        {
+          ...job,
+          history: [{ status: job.status, date: new Date().toISOString() }],
+        },
+      ],
     })),
   updateJobStatus: (id, status) =>
     set((state) => ({
-      jobs: state.jobs.map((job) => (job.id === id ? { ...job, status } : job)),
+      jobs: state.jobs.map((job) =>
+        job.id === id
+          ? {
+              ...job,
+              status,
+              history: [
+                ...(job.history || []),
+                { status, date: new Date().toISOString() },
+              ],
+            }
+          : job
+      ),
     })),
   updateJobDetails: (id, updatedData) =>
     set((state) => ({

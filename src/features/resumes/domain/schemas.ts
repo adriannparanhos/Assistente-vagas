@@ -5,6 +5,7 @@ export const resumeSchema = z.object({
   targetRole: z.string().min(3, 'O cargo alvo deve ter pelo menos 3 caracteres.'),
   fileName: z.string().min(1, 'Selecione um arquivo PDF.'),
   fileBase64: z.string().min(1, 'O arquivo é obrigatório.'),
+  skills: z.string().min(1, 'Adicione pelo menos uma habilidade (palavra-chave).'),
 });
 
 export type ResumeFormData = z.infer<typeof resumeSchema>;

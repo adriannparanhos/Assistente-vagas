@@ -10,6 +10,7 @@ export interface Resume {
   createdAt: string;
   fileName: string;
   fileBase64: string;
+  skills: string;
 }
 
 const idbStorage: StateStorage = {
