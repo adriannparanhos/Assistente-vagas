@@ -11,6 +11,14 @@ export class ApiError extends Error {
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
+  if (response.status === 401) {
+    import('../../features/auth/store/useAuthStore').then(({ useAuthStore }) => {
+      useAuthStore.getState().logout();
+    });
+    window.location.href = '/login';
+    throw new ApiError(401, 'Sessão expirada. Faça login novamente.');
+  }
+
   if (!response.ok) {
     const errorText = await response.text();
     let errorMessage = 'Ocorreu um erro na requisição.';

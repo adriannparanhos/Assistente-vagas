@@ -22,7 +22,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
   fetchJobs: async () => {
     set({ isLoading: true, error: null });
     try {
-      const data = await apiClient.get<JobApplication[]>('/jobs?userId=user-123');
+      const data = await apiClient.get<JobApplication[]>('/jobs');
       set({ jobs: data, isLoading: false });
     } catch (err: any) {
       set({ error: err.message || 'Erro ao carregar as vagas', isLoading: false });
@@ -34,7 +34,6 @@ export const useJobStore = create<JobStore>((set, get) => ({
     try {
       const jobWithHistory = {
         ...job,
-        userId: 'user-123',
         history: [{ status: job.status, date: new Date().toISOString() }],
       };
       

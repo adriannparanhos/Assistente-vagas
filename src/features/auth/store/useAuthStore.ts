@@ -39,19 +39,23 @@ export const useAuthStore = create<AuthState>()(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
-          set({
-            user: response.user,
-            token: response.token,
-            isAuthenticated: true,
-            isLoading: false,
+          const data = await apiClient.post<any>('/auth/login', credentials);
+          
+          const tokenJWT = data.accessToken || data.access_token || data.token;
+
+          if (!tokenJWT) {
+            throw new Error('Token não retornado pelo servidor');
+          }
+
+          set({ 
+            user: data.user, 
+            token: tokenJWT, 
+            isAuthenticated: true, 
+            isLoading: false 
           });
+          
         } catch (err: any) {
-          set({
-            error: err.message || 'Erro ao efetuar login. Verifique suas credenciais.',
-            isLoading: false,
-          });
-          throw err;
+          set({ error: err.message || 'Credenciais inválidas', isLoading: false });
         }
       },
 

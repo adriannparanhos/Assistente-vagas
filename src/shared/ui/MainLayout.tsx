@@ -1,7 +1,8 @@
-import { Plus } from 'lucide-react';
+import { Plus, LogOut } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { JobForm } from '../../features/jobs/components/JobForm';
+import { useAuthStore } from '../../features/auth/store/useAuthStore';
 import { Modal } from './Modal';
 
 interface MainLayoutProps {
@@ -21,6 +22,13 @@ const navigationItems: NavigationItem[] = [
 
 export function MainLayout({ children }: MainLayoutProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate('/login');
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -54,6 +62,15 @@ export function MainLayout({ children }: MainLayoutProps) {
               </NavLink>
             ))}
           </nav>
+
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300 md:mt-auto md:mb-6"
+            type="button"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sair</span>
+          </button>
         </div>
       </aside>
 
