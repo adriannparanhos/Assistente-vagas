@@ -31,13 +31,32 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return JSON.parse(text);
 }
 
+function getHeaders(): HeadersInit {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    const storage = localStorage.getItem('auth-storage');
+    if (storage) {
+      const parsed = JSON.parse(storage);
+      const token = parsed.state?.token;
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+  } catch {
+    // Fail silently
+  }
+
+  return headers;
+}
+
 export const apiClient = {
   async get<T>(endpoint: string): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getHeaders(),
     });
     return handleResponse<T>(response);
   },
@@ -45,9 +64,7 @@ export const apiClient = {
   async post<T>(endpoint: string, body: unknown): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getHeaders(),
       body: JSON.stringify(body),
     });
     return handleResponse<T>(response);
@@ -56,9 +73,7 @@ export const apiClient = {
   async patch<T>(endpoint: string, body: unknown): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getHeaders(),
       body: JSON.stringify(body),
     });
     return handleResponse<T>(response);
@@ -67,9 +82,7 @@ export const apiClient = {
   async delete<T>(endpoint: string): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getHeaders(),
     });
     return handleResponse<T>(response);
   },

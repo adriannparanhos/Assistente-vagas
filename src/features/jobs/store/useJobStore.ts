@@ -6,7 +6,7 @@ interface JobStore {
   jobs: JobApplication[];
   isLoading: boolean;
   error: string | null;
-  
+
   fetchJobs: () => Promise<void>;
   addJob: (job: JobApplication) => Promise<void>;
   updateJobStatus: (id: string, status: JobApplicationStatus) => void;
@@ -14,7 +14,7 @@ interface JobStore {
   deleteJob: (id: string) => void;
 }
 
-export const useJobStore = create<JobStore>((set) => ({
+export const useJobStore = create<JobStore>((set, get) => ({
   jobs: [],
   isLoading: false,
   error: null,
@@ -32,7 +32,6 @@ export const useJobStore = create<JobStore>((set) => ({
   addJob: async (job) => {
     set({ isLoading: true, error: null });
     try {
-      // Mock history for optimistic/local usage before DB stores it correctly
       const jobWithHistory = {
         ...job,
         userId: 'user-123',
@@ -49,6 +48,7 @@ export const useJobStore = create<JobStore>((set) => ({
       set({ error: err.message || 'Erro ao criar a vaga', isLoading: false });
     }
   },
+
   updateJobStatus: (id, status) =>
     set((state) => ({
       jobs: state.jobs.map((job) =>
@@ -64,12 +64,23 @@ export const useJobStore = create<JobStore>((set) => ({
           : job
       ),
     })),
+
   updateJobDetails: (id, updatedData) =>
     set((state) => ({
       jobs: state.jobs.map((job) => (job.id === id ? { ...job, ...updatedData } : job)),
     })),
-  deleteJob: (id) =>
+
+  deleteJob: async (jobId: string) => {
     set((state) => ({
-      jobs: state.jobs.filter((job) => job.id !== id),
-    })),
+      jobs: state.jobs.filter((job) => job.id !== jobId),
+    }));
+
+    try {
+      await apiClient.delete(`/jobs/${jobId}`);
+      console.log('Vaga deletada com sucesso no backend!');
+    } catch (error) {
+      console.error('Falha ao deletar vaga na API. Revertendo...', error);
+      await get().fetchJobs(); 
+    }
+  },
 }));
