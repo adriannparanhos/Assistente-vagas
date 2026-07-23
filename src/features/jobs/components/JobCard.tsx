@@ -107,7 +107,8 @@ export function JobCard({ job }: JobCardProps) {
 
       <div className="mt-4 flex items-center gap-2 text-xs text-gray-400">
         <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-        <span>{dateFormatter.format(new Date(`${job.appliedDate}T00:00:00`))}</span>
+        {}
+        <span>{dateFormatter.format(new Date(job.appliedDate))}</span>
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
